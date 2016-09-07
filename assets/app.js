@@ -10,31 +10,32 @@ function displayTopicInfo() {
 
 	$.ajax({url: queryURL, method: 'GET'}).done(function(response) {
      	console.log(response);
+     	console.log(queryURL);
 
-     	//$('button').on('click',)
-     	results = response.data;
+     	var results = response.data;
+
+     	for (var i=0; i<results.length;i++) {
 
      	//Creates a generic div to hold the topic
      	var topicDiv = $('<div class="topic">');
 
-     	//Retrieve the rating data
-     	var rating = response.data.rating;
-
      	//Creates an element to have the rating displayed
-     	var pOne = $('<p>').text("Rating: "+ rating);
+     	var p = $('<p>').text("Rating: " + results[i].rating);
 
-     	//Displays the rating
-     	topicDiv.append(pOne);
+     	//Creates and appends an image
+     	var image = $('<img>');
+     	image.attr('src',results[i].images.fixed_height.url);
 
-     	//Creates and appends the image
-     	// var image = $('<img>').attr("src",response.data.images.fixed_height);
-     	 // topicDiv.append(image);
+     	//Appends the newly created html elements
+     	topicDiv.append(p);
+     	topicDiv.append(image);
 
-     	//Puts the entire set into html
+     	//Prints the html content
      	$('#topicView').append(topicDiv);
 
-	});
- }
+	};
+ });
+}
 	
 //Function top handle events where one button is clicked
 
