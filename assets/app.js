@@ -9,27 +9,34 @@ function displayTopicInfo() {
 	var queryURL = "http://api.giphy.com/v1/gifs/search?q=" + topic + "&api_key=dc6zaTOxFJmzC&limit=10";
 
 	$.ajax({url: queryURL, method: 'GET'}).done(function(response) {
-     	console.log(response);
-     	console.log(queryURL);
 
+     	$('#topicView').empty();
      	var results = response.data;
 
      	for (var i=0; i<results.length;i++) {
 
      	//Creates a generic div to hold the topic
-     	var topicDiv = $('<div class="topic">');
+     	var topicDiv = $('<div>');
 
      	//Creates an element to have the rating displayed
      	var p = $('<p>').text("Rating: " + results[i].rating);
 
-     	//Creates and appends an image
+     	//Creates and appends an image; assigns attributes to pause and animate
      	var image = $('<img>');
-     	image.attr('src',results[i].images.fixed_height.url);
+     	var thumbnail = $('<div>').addClass("thumbnail");
+     	
+     	image.attr("data-still",results[i].images.fixed_height_still.url);
+     	image.attr("data-animate",results[i].images.fixed_height.url);
+     	image.attr("data-state","still");
+     	image.attr("data-id",results[i].id);
+     	image.attr('src',results[i].images.fixed_height_still.url);
+
 
      	//Appends the newly created html elements
-     	topicDiv.append(p);
-     	topicDiv.append(image);
-
+     	thumbnail.append(p);
+     	thumbnail.append(image);
+     	topicDiv.append(thumbnail);
+     	
      	//Prints the html content
      	$('#topicView').append(topicDiv);
 
@@ -37,7 +44,18 @@ function displayTopicInfo() {
  });
 }
 	
-//Function top handle events where one button is clicked
+//Function starts and pauses animation of chosen html img
+function animatePic() {
+	var state = $(this).attr('data-state');
+		if (state === "still") {
+			$(this).attr("src",$(this).data("animate"));
+			$(this).attr("data-state","animate");
+		} else {
+			$(this).attr("src",$(this).data("still"));
+			$(this).attr("data-state","still");
+		}
+
+}
 
 
 
@@ -82,6 +100,7 @@ $('#addTopic').on('click', function() {
 
 //Function to display the topic info
 $(document).on('click','.topic',displayTopicInfo);
+$(document).on('click','img',animatePic);
 
 //Instructions to run the renderButtons function
 renderButtons();
